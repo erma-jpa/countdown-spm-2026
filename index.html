@@ -1,1 +1,378 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown SPM 2026</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #07111f;
+  color: white;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 25px 16px 50px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.header h1 {
+  margin-bottom: 5px;
+  font-size: 36px;
+}
+
+.header p {
+  color: #a9bdd5;
+  margin: 5px;
+}
+
+.next {
+  border: 2px solid #3388ff;
+  background: #0b1626;
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.next-label {
+  color: #9eb8d5;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.next h2 {
+  margin: 8px 0 4px;
+}
+
+.date {
+  color: #b8c7d9;
+  font-size: 14px;
+}
+
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.card {
+  background: #111c2b;
+  border: 1px solid #26384d;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.card.highlight {
+  border: 2px solid #3388ff;
+}
+
+.card h3 {
+  margin: 0 0 6px;
+}
+
+.status {
+  float: right;
+  font-size: 10px;
+  padding: 5px 8px;
+  border: 1px solid #40546b;
+  border-radius: 20px;
+  color: #8fc8ff;
+}
+
+.timer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.time {
+  background: #0b1626;
+  border-radius: 12px;
+  text-align: center;
+  padding: 12px 3px;
+}
+
+.number {
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.label {
+  font-size: 10px;
+  color: #a9bdd5;
+}
+
+.finished {
+  margin-top: 18px;
+  text-align: center;
+  background: #16283a;
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.footer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.footer strong {
+  font-size: 19px;
+}
+
+.footer p {
+  color: #a9bdd5;
+}
+
+@media (max-width: 650px) {
+  .subjects {
+    grid-template-columns: 1fr;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .number {
+    font-size: 23px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>🎓 COUNTDOWN SPM 2026</h1>
+    <p><strong>THE FINAL PUSH 🚀</strong></p>
+    <p>Countdown dikemas kini secara automatik setiap saat</p>
+  </div>
+
+  <div id="nextExam" class="next"></div>
+
+  <div id="subjects" class="subjects"></div>
+
+  <div class="footer">
+    <strong>Usaha Hari Ini, Untuk Kejayaan Esok ❤️</strong>
+    <p>Fokus • Konsisten • Jangan Mengalah</p>
+  </div>
+
+</div>
+
+<script>
+
+const exams = [
+  {
+    name: "Bahasa Melayu",
+    icon: "📖",
+    date: "2026-11-23T08:00:00+08:00"
+  },
+  {
+    name: "Bahasa Inggeris",
+    icon: "🔤",
+    date: "2026-11-24T08:00:00+08:00"
+  },
+  {
+    name: "Pendidikan Islam",
+    icon: "☪️",
+    date: "2026-11-25T08:00:00+08:00"
+  },
+  {
+    name: "Matematik",
+    icon: "➗",
+    date: "2026-11-26T08:00:00+08:00"
+  },
+  {
+    name: "Sejarah",
+    icon: "📜",
+    date: "2026-11-30T08:00:00+08:00"
+  },
+  {
+    name: "Sains",
+    icon: "🔬",
+    date: "2026-12-03T08:00:00+08:00"
+  },
+  {
+    name: "Ekonomi",
+    icon: "📊",
+    date: "2026-12-07T08:00:00+08:00"
+  },
+  {
+    name: "Prinsip Perakaunan",
+    icon: "🧾",
+    date: "2026-12-14T08:00:00+08:00"
+  }
+];
+
+function getCountdown(target) {
+
+  let diff = new Date(target).getTime() - new Date().getTime();
+
+  if (diff <= 0) return null;
+
+  const days = Math.floor(diff / 86400000);
+  diff %= 86400000;
+
+  const hours = Math.floor(diff / 3600000);
+  diff %= 3600000;
+
+  const minutes = Math.floor(diff / 60000);
+  diff %= 60000;
+
+  const seconds = Math.floor(diff / 1000);
+
+  return { days, hours, minutes, seconds };
+}
+
+function timerHTML(t) {
+
+  return `
+    <div class="timer">
+
+      <div class="time">
+        <span class="number">${t.days}</span>
+        <span class="label">HARI</span>
+      </div>
+
+      <div class="time">
+        <span class="number">${String(t.hours).padStart(2,"0")}</span>
+        <span class="label">JAM</span>
+      </div>
+
+      <div class="time">
+        <span class="number">${String(t.minutes).padStart(2,"0")}</span>
+        <span class="label">MINIT</span>
+      </div>
+
+      <div class="time">
+        <span class="number">${String(t.seconds).padStart(2,"0")}</span>
+        <span class="label">SAAT</span>
+      </div>
+
+    </div>
+  `;
+}
+
+function formatDate(date) {
+
+  return new Intl.DateTimeFormat("ms-MY", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Asia/Kuala_Lumpur"
+  }).format(new Date(date));
+}
+
+function updateCountdown() {
+
+  const subjectArea = document.getElementById("subjects");
+  const nextArea = document.getElementById("nextExam");
+
+  subjectArea.innerHTML = "";
+
+  let nearest = null;
+
+  for (const exam of exams) {
+    if (getCountdown(exam.date)) {
+      nearest = exam;
+      break;
+    }
+  }
+
+  if (nearest) {
+
+    const t = getCountdown(nearest.date);
+
+    nextArea.innerHTML = `
+      <div class="next-label">PEPERIKSAAN SETERUSNYA</div>
+
+      <h2>
+        ${nearest.icon} ${nearest.name}
+      </h2>
+
+      <div class="date">
+        ${formatDate(nearest.date)}
+      </div>
+
+      ${timerHTML(t)}
+    `;
+
+  } else {
+
+    nextArea.innerHTML =
+      "<h2 style='text-align:center'>🎉 SEMUA PEPERIKSAAN SELESAI!</h2>";
+  }
+
+
+  exams.forEach(exam => {
+
+    const t = getCountdown(exam.date);
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    if (nearest && exam.name === nearest.name) {
+      card.classList.add("highlight");
+    }
+
+    if (t) {
+
+      card.innerHTML = `
+        <span class="status">LIVE</span>
+
+        <h3>
+          ${exam.icon} ${exam.name}
+        </h3>
+
+        <div class="date">
+          ${formatDate(exam.date)}
+        </div>
+
+        ${timerHTML(t)}
+      `;
+
+    } else {
+
+      card.innerHTML = `
+        <h3>
+          ${exam.icon} ${exam.name}
+        </h3>
+
+        <div class="date">
+          ${formatDate(exam.date)}
+        </div>
+
+        <div class="finished">
+          ✓ SELESAI
+        </div>
+      `;
+    }
+
+    subjectArea.appendChild(card);
+  });
+}
+
+updateCountdown();
+
+setInterval(updateCountdown, 1000);
+
+</script>
+
+</body>
+</html>
 
